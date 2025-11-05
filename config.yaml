@@ -1,0 +1,28 @@
+# NanoTuner-3B-Q-Finetuning/config.yaml
+
+# --- Base Model Configuration ---
+model_id: "microsoft/Phi-3-mini-4k-instruct" # The chosen base 3B model
+dataset_id: "your_hf_username/your_curated_data" # Placeholder: Replace with your specialized dataset on the Hub
+output_dir: "./nanotuner-3b-q-adapter"
+
+# --- QLoRA Configuration (PEFT) ---
+lora_r: 64          # Rank of the update matrices (Higher = more capacity, more VRAM)
+lora_alpha: 128     # Scaling factor for LoRA updates (Alpha > R is often better)
+lora_dropout: 0.05
+lora_target_modules: 
+  - qkv_proj      # Common targets for Phi/Mistral architecture
+  - o_proj
+  - gate_up_proj
+  - down_proj
+
+# --- Training Arguments (SFTTrainer) ---
+num_train_epochs: 3          # Number of passes over the dataset
+per_device_train_batch_size: 4 # Batch size per GPU (Keep small for QLoRA)
+gradient_accumulation_steps: 4 # Simulate a larger batch size (4 * 4 = Effective Batch 16)
+warmup_ratio: 0.03           # Percentage of steps for learning rate warmup
+learning_rate: 2.0e-5        # Optimal range for QLoRA: 1e-5 to 5e-5
+logging_steps: 100
+save_steps: 500
+optim: "paged_adamw_8bit"    # Use paged optimizer for VRAM efficiency
+fp16: False                  # Set to True if using a modern GPU (A100/H100) or if torch is installed with CUDA 11.x
+bf16: True                   # Set to True if using modern NVIDIA A10G/A100 (Recommended for stability)
