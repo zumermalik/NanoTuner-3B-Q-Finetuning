@@ -1,10 +1,10 @@
 torch>=2.1.0
-transformers==4.38.2
-bitsandbytes==0.42.0
-peft==0.8.2
-accelerate==0.27.2
-datasets==2.17.1
-trl==0.7.11
+transformers>=4.41.0  # BUMPED UP to fix the conflict
+bitsandbytes>=0.43.1
+peft>=0.11.1
+accelerate>=0.30.0
+datasets>=2.19.0
+trl>=0.8.6
 scipy
 pyyaml
 tensorboard
