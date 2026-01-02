@@ -1,0 +1,35 @@
+# configs/default.yaml
+project:
+  name: "NanoTuner-3B"
+  owner: "zumer"  # Change to your handle
+
+model:
+  id: "microsoft/Phi-3-mini-4k-instruct"
+  trust_remote_code: true
+  dtype: "bfloat16" # Critical for Ampere GPUs (A10G/A100)
+
+quantization:
+  load_in_4bit: true
+  quant_type: "nf4"
+  use_double_quant: true
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  bias: "none"
+  target_modules: "all-linear" # Helper to target all linear layers automatically
+
+training:
+  batch_size: 2
+  grad_accum: 4
+  epochs: 1
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  context_window: 2048
+  optimizer: "paged_adamw_32bit"
+  
+hub:
+  push: true
+  private: false
+  model_id: "NanoTuner-Phi3-Adapter"
