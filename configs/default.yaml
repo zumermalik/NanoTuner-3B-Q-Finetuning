@@ -1,12 +1,14 @@
 # configs/default.yaml
 project:
   name: "NanoTuner-3B"
-  owner: "zumer"  # Change to your handle
+  owner: "zumer"
 
 model:
   id: "microsoft/Phi-3-mini-4k-instruct"
+  # ADDED THIS: The missing link!
+  dataset_id: "mlabonne/guanaco-llama2-1k" 
   trust_remote_code: true
-  dtype: "bfloat16" # Critical for Ampere GPUs (A10G/A100)
+  dtype: "bfloat16"
 
 quantization:
   load_in_4bit: true
@@ -18,7 +20,15 @@ lora:
   alpha: 32
   dropout: 0.05
   bias: "none"
-  target_modules: "all-linear" # Helper to target all linear layers automatically
+  # CHANGED: Explicit list is safer than "all-linear" for standard PEFT
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
 
 training:
   batch_size: 2
@@ -32,4 +42,5 @@ training:
 hub:
   push: true
   private: false
+  # This will be the name of the repo created on your account
   model_id: "NanoTuner-Phi3-Adapter"
